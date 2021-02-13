@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Todo } from '../models/todo.model';
 import { TodosService } from '../services/todos.service';
 
@@ -8,7 +9,7 @@ import { TodosService } from '../services/todos.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  nonCompletedTodos: Todo[] = [];
+  todos: Observable<Todo[]> | undefined;
 
   selectedTodo: Todo | undefined;
 
@@ -27,21 +28,25 @@ export class HomeComponent implements OnInit {
 
   onComplete() {
     if (!this.selectedTodo) return;
-    this.selectedTodo.completed = true;
-    this.loadTodos();
+    this.todosService.completeTodo(this.selectedTodo.id).subscribe(() => {
+      this.loadTodos();
+    });
   }
 
   onAdd() {
     if (!this.newTodo) return;
-    const myNewTodo: Todo = { text: this.newTodo, completed: false };
-    this.todosService.allTodos.push(myNewTodo);
-    this.loadTodos();
+    const myNewTodo: Todo = {
+      id: 0,
+      text: this.newTodo,
+      completed: false,
+    };
+    this.todosService.addTodo(myNewTodo).subscribe(() => {
+      this.loadTodos();
+    });
   }
 
   private loadTodos() {
-    this.nonCompletedTodos = this.todosService.allTodos.filter(
-      (t) => !t.completed
-    );
+    this.todos = this.todosService.getAllTodos();
     this.selectedTodo = undefined;
     this.newTodo = '';
   }

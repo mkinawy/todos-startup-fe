@@ -7,7 +7,7 @@
 
 <div class="p-mt-2">
   <p-listbox
-    [options]="nonCompletedTodos"
+    [options]="(todos | async) || []"
     [(ngModel)]="selectedTodo"
     optionLabel="text"
     (onChange)="onTodoSelect()"
