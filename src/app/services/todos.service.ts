@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Todo } from '../models/todo.model';
 
 const BASE_URL = 'https://localhost:44360/api';
@@ -8,10 +10,16 @@ const BASE_URL = 'https://localhost:44360/api';
   providedIn: 'root',
 })
 export class TodosService {
+  todoCompelted = new Subject();
+
   constructor(private http: HttpClient) {}
 
-  getAllTodos() {
+  getUncompletedTodos() {
     return this.http.get<Todo[]>(BASE_URL + '/todos');
+  }
+
+  getCompletedTodos() {
+    return this.http.get<Todo[]>(BASE_URL + '/todos/completed');
   }
 
   addTodo(todo: Todo) {
@@ -19,6 +27,8 @@ export class TodosService {
   }
 
   completeTodo(id: number) {
-    return this.http.post(`${BASE_URL}/todos/${id}/complete`, null);
+    return this.http
+      .post(`${BASE_URL}/todos/${id}/complete`, null)
+      .pipe(tap(() => this.todoCompelted.next()));
   }
 }

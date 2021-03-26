@@ -1,23 +1,7 @@
-<h1>My todos</h1>
+<h1>Welcome to Todos Startup</h1>
 
-<div>
-  <input type="text" pInputText [(ngModel)]="newTodo" class="p-mr-2" />
-  <p-button label="Add" (onClick)="onAdd()" [disabled]="!newTodo"></p-button>
-</div>
+<app-uncompleted-todos></app-uncompleted-todos>
 
-<div class="p-mt-2">
-  <p-listbox
-    [options]="(todos | async) || []"
-    [(ngModel)]="selectedTodo"
-    optionLabel="text"
-    (onChange)="onTodoSelect()"
-  ></p-listbox>
+<p-divider></p-divider>
 
-  <div class="p-mt-2">
-    <p-button
-      label="Complete"
-      *ngIf="!!selectedTodo"
-      (onClick)="onComplete()"
-    ></p-button>
-  </div>
-</div>
+<app-completed-todos></app-completed-todos>
